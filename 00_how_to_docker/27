@@ -1,0 +1,2 @@
+#!/bin/bash
+docker logs -f $(docker ps | grep engineering-bay | awk '{print $1}')
