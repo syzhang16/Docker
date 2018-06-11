@@ -5,6 +5,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   && apt-get upgrade -y\
   && apt-get install -y apt-utils bzip2 \
   && mv teamspeak3-server_linux_amd64 /opt/teamspeak
+# creer un nouveau user et changer les permissions
 RUN useradd teamspeak && mkdir -p /opt/teamspeak/data && chown teamspeak:teamspeak /opt/teamspeak/data
 # creer un point de montage
 VOLUME ["/opt/teamspeak/data"]
