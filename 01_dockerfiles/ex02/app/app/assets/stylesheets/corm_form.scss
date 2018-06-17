@@ -1,0 +1,146 @@
+form {
+    .row {
+        margin: 0 0 0 -10px;
+        div, p, a, ul, li, select, input, textarea, label {
+          display: inline-block;
+		    margin-bottom: 0;
+        }
+        &.row-center {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        &.row-fluid {
+            width: 97%;
+        }
+	    .typeahead {
+	        display: block;
+		    li {
+			    display: list-item;
+			    a {
+				    display: block;
+			    }
+		    }
+	  }
+  }
+  .field {
+	> div, > p, > a, > ul, > li, > select, > input, > textarea, > label {
+		margin-bottom: 9px;
+	}
+	> .span2 {
+		text-align: right;
+		padding-right: 8px;
+		margin-top: 0.45%;
+	}
+		label {
+			&.error {
+				/* This field is required */
+				display: inline-block;
+				vertical-align: middle;
+				color: $form-error-on-require-field-color;
+				font-weight: 900;
+				padding-left: 15px;
+			}
+		}
+    &.small-date {
+      width: 160px;
+    }
+    &.time {
+      width: 150px;
+    }
+    &.full {
+      width: 99%;
+    }
+    p {
+			&.full {
+				display: block;
+        input {
+          display: block;
+          width: 99%;
+        }
+			}
+		}
+  }
+}
+
+label {
+  line-height: 18px;
+  display: inline-block;
+  &.top {
+    display: block;
+    margin-bottom: 0;
+    width: 100%;
+  }
+  &.checkbox {
+    padding: 8px;
+    width: auto;
+    &:hover {
+      background-color: #E1E1E1;
+    }
+    &:active {
+      background-color: #D1D1D1;
+    }
+    input[type=checkbox] {
+      margin-left: 0;
+      margin-right: 5px;
+      border: 0;
+    }
+    &.right-field {
+      padding: 5px;
+      vertical-align: top;
+      display: inline-block;
+    }
+  }
+}
+
+span.req:before {
+	content: " *";
+	font-size: 20px;
+	color: $form-error-on-require-field-color;
+	padding-left: 5px;
+}
+
+.small-fields {
+  input, textarea {
+    width: 80%;
+  }
+  select {
+    width: 86%;
+  }
+}
+
+form#new_event {
+	.row {
+		margin-bottom: 2px;
+		.field {
+			> div, > p, > a, > ul, > li, > select, > input, > textarea, > label {
+				margin-bottom: 0 !important;
+			}
+		}
+	}
+}
+
+
+#new_contact, #new_user {
+    .row.small-fields {
+        margin: 0 auto;
+        padding: 0;
+        width: 97%;
+    }
+	.field {
+		margin-bottom: 2px;
+		> div, > p, > a, > ul, > li, > select, > input, > textarea, > label {
+			margin-bottom: 0 !important;
+		}
+	}
+}
+
+.small-message {
+    vertical-align: middle;
+    font-family: Helvetica;
+    color: green;
+    padding-left: 20px;
+}
+
+.form-horizontal .control-group {
+    margin-bottom: 8px;
+}

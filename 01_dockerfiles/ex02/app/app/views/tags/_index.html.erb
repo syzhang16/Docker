@@ -1,0 +1,31 @@
+<%= render 'title', :locals => { :title => @title }%>
+
+<div class="container-fluid">
+
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th><center>#</center></th>
+        <th><center>Nom</center></th>
+        <th><center>Description</center></th>
+        <th><center>Éditer</center></th>
+      </tr>
+    </thead>
+
+  <tbody>
+  <% @tags.each do |tag| %>
+    <tr>
+      <td><center><%= tag.id %></center></td>
+      <td><center><%= tag.name %></center></td>
+      <td><center><%= truncate(tag.description, :length => 75, :separator => ' ')%></center></td>
+      <td><center><%= link_to '<i class="fa fa-edit fa-2x action-icon"></i>'.html_safe, edit_tag_path(tag),{:title => "Éditer le tag"} %></center></td>
+    </tr>
+  <% end %>
+  </tbody>
+  </table>
+
+  <br />
+
+  <%= paginate @tags %>
+
+</div>

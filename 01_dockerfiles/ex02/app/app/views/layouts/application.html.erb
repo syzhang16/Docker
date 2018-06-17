@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CoRM</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="CoRM">
+    <%= stylesheet_link_tag "application", :media => "all" %>
+    <%= javascript_include_tag :application %>
+    <%= yield(:attachments_js) %>
+    <%= csrf_meta_tags %>
+    <%= favicon_link_tag 'icons/favicon2.png' %>
+	<%= favicon_link_tag 'icons/logo-corm-128.png', rel: 'apple-touch-icon', type: 'image/png' %>
+</head>
+<body role="application">
+
+<div id="wrap">
+
+<%= render "shared/menu" %>
+
+<%= render "shared/message" %>
+
+<%= yield %>
+
+</div><!--! end of #wrap -->
+
+<%= render "shared/footer" %>
+
+<!-- Tracking Piwik -->
+<%# piwik_tracking_tag %>
+
+</body>
+</html>

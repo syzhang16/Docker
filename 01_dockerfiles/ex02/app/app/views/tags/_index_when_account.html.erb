@@ -1,0 +1,63 @@
+<% @tags_select = Tag.all - @account.tags %>
+
+<div class="container-fluid" style="margin-top: 1em;">
+
+
+     <div class="well">
+       <div class="row-fluid">
+         <div class="span8">
+           <h2>Tags de <%=@account.company%></h2>
+         </div>
+         </div>
+       </div>
+     </div>
+
+
+
+<div class="container-fluid">
+       <div class="row-fluid">
+         <div class="span9">
+          <%= form_tag({:controller => "accounts", :action => "add_tag", :account_id => @account.id}, :method => "post") do %>
+            <%= select_tag :tag_id, options_from_collection_for_select(@tags_select, "id", "name") %>
+						<% if (@tags_select.count > 0) %>
+              <%= submit_tag "Affecter", class: "btn btn-primary" %>
+						<% else %>
+						  <%= label_tag(:tag_id, "Aucun tag disponible à l'ajout", { :class => 'badge badge-warning', :style => 'vertical-align: top; margin-left: 5px; margin-top: 6px;' }) %>
+					  <% end %>
+          <% end %>
+          </div>
+		</div>
+
+	<% if @account.tags.blank? %>
+		<h4> Aucun Tag n'est rattaché à ce compte...</h4>
+	<% else %>
+
+
+
+<table class="table table-bordered table-striped">
+  <thead>
+  <tr>
+    <th class="text-center">Nom</th>
+    <th class="text-center">Description</th>
+    <th class="text-center">Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+
+
+<% @tags.each do |tag| %>
+  <tr>
+    <td style="width: 15em;" class="text-center"><%= tag.name %></td>
+    <td><%= truncate(tag.description, :length => 500, :separator => ' ') %></td>
+    <td class="text-center"><%= link_to '<i class="fa fa-trash-o fa-2x action-icon"></i>'.html_safe, {:controller => "accounts", :action => "delete_tag", :account_id => @account.id, :tag_id => tag.id } %></td>
+	<% end %>
+  </tbody>
+</table>
+
+  <br />
+
+  <%= paginate @tags %>
+
+
+<% end %>
+</div>

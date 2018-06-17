@@ -1,0 +1,661 @@
+en:
+  date:
+    abbr_day_names:
+    - Sun
+    - Mon
+    - Tue
+    - Wed
+    - Thu
+    - Fri
+    - Sat
+    abbr_month_names:
+    -
+    - Jan
+    - Feb
+    - Mar
+    - Apr
+    - May
+    - Jun
+    - Jul
+    - Aug
+    - Sep
+    - Oct
+    - Nov
+    - Dec
+    day_names:
+    - Sunday
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    formats:
+      default: ! '%Y-%m-%d'
+      long: ! '%B %d, %Y'
+      short: ! '%b %d'
+    month_names:
+    -
+    - January
+    - February
+    - March
+    - April
+    - May
+    - June
+    - July
+    - August
+    - September
+    - October
+    - November
+    - December
+    order:
+    - :year
+    - :month
+    - :day
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: about 1 hour
+        other: about %{count} hours
+      about_x_months:
+        one: about 1 month
+        other: about %{count} months
+      about_x_years:
+        one: about 1 year
+        other: about %{count} years
+      almost_x_years:
+        one: almost 1 year
+        other: almost %{count} years
+      half_a_minute: half a minute
+      less_than_x_minutes:
+        one: less than a minute
+        other: less than %{count} minutes
+      less_than_x_seconds:
+        one: less than 1 second
+        other: less than %{count} seconds
+      over_x_years:
+        one: over 1 year
+        other: over %{count} years
+      x_days:
+        one: 1 day
+        other: ! '%{count} days'
+      x_minutes:
+        one: 1 minute
+        other: ! '%{count} minutes'
+      x_months:
+        one: 1 month
+        other: ! '%{count} months'
+      x_seconds:
+        one: 1 second
+        other: ! '%{count} seconds'
+    formats:
+      default: ! '%Y-%m-%d %H:%M'
+    prompts:
+      day: Day
+      hour: Hour
+      minute: Minute
+      month: Month
+      second: Seconds
+      year: Year
+  errors:
+    format: ! '%{attribute} %{message}'
+    messages:
+      accepted: must be accepted
+      blank: can't be blank
+      present: must be blank
+      confirmation: ! "doesn't match %{attribute}"
+      empty: can't be empty
+      equal_to: must be equal to %{count}
+      even: must be even
+      exclusion: is reserved
+      greater_than: must be greater than %{count}
+      greater_than_or_equal_to: must be greater than or equal to %{count}
+      inclusion: is not included in the list
+      invalid: is invalid
+      less_than: must be less than %{count}
+      less_than_or_equal_to: must be less than or equal to %{count}
+      not_a_number: is not a number
+      not_an_integer: must be an integer
+      odd: must be odd
+      record_invalid: ! 'Validation failed: %{errors}'
+      restrict_dependent_destroy:
+        one: "Cannot delete record because a dependent %{record} exists"
+        many: "Cannot delete record because dependent %{record} exist"
+      taken: has already been taken
+      too_long:
+        one: is too long (maximum is 1 character)
+        other: is too long (maximum is %{count} characters)
+      too_short:
+        one: is too short (minimum is 1 character)
+        other: is too short (minimum is %{count} characters)
+      wrong_length:
+        one: is the wrong length (should be 1 character)
+        other: is the wrong length (should be %{count} characters)
+      other_than: "must be other than %{count}"
+      no_relation: "No relation attach to this account"
+    template:
+      body: ! 'There were problems with the following fields:'
+      header:
+        one: 1 error prohibited this %{model} from being saved
+        other: ! '%{count} errors prohibited this %{model} from being saved'
+  helpers:
+    select:
+      prompt: Please select
+    submit:
+      create: Create %{model}
+      submit: Save %{model}
+      update: Update %{model}
+    label:
+      campaign:
+        name: 'Name'
+        date_begin: 'Start at'
+        date_end: 'End at'
+        event_type: 'Event type'
+        notes: 'Notes'
+      campaign_completed_stage:
+        name: 'Name'
+        percentage: 'Percentage'
+      campaign_result_stage:
+        name: 'Name'
+        percentage: 'Percentage'
+      account:
+        company: 'Company :'
+        active: 'Status :'
+        adress1: 'Address :'
+        adress2: 'Address (2) :'
+        zip: 'Zip :'
+        city: 'City :'
+        country: 'Country :'
+        tel: 'Phone :'
+        fax: 'Fax :'
+        email: 'E-mail :'
+        web: 'Web site :'
+        origin: 'Origin :'
+        activity: 'Activity :'
+        account_category: 'Category :'
+        tags: 'Tags'
+        registration_number: 'Registration number :'
+        business_sector_code: 'Business sector code :'
+        vat_number: 'VAT number :'
+        turnover: "Turnover :"
+        projected_turnover: 'Projected turnover :'
+        identifier: 'Identifier :'
+        periodicity_billing: 'Periodicity billing :'
+        payment_term: 'Payment Term :'
+        accounting_code: 'Accounting code :'
+        user: 'User :'
+        notes: 'Notes :'
+      account_category:
+        name: 'Name'
+      mail_event_type:
+        name: 'Name'
+        pattern: 'Pattern'
+        at_beginning: 'At beginning'
+        event_type: "Event's type"        
+      payment_mode:
+        name: 'Name'
+      payment_term:
+        name: 'Name'
+        days_number: 'Days number'
+        term_type: 'Type'
+        term_day: 'At'
+        payment_mode: 'Payment mode'
+      task:
+        event_type: 'Type'
+  number:
+    currency:
+      format:
+        delimiter: ! ','
+        format: ! '%u%n'
+        precision: 2
+        separator: .
+        significant: false
+        strip_insignificant_zeros: false
+        unit: $
+    format:
+      delimiter: ! ','
+      precision: 3
+      separator: .
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: ! '%n %u'
+        units:
+          billion: Billion
+          million: Million
+          quadrillion: Quadrillion
+          thousand: Thousand
+          trillion: Trillion
+          unit: ''
+      format:
+        delimiter: ''
+        precision: 3
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: ! '%n %u'
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        delimiter: ''
+        format: "%n%"
+    precision:
+      format:
+        delimiter: ''
+  support:
+    array:
+      last_word_connector: ! ', and '
+      two_words_connector: ! ' and '
+      words_connector: ! ', '
+  time:
+    am: am
+    formats:
+      default: ! '%a, %d %b %Y %H:%M:%S %z'
+      long: ! '%B %d, %Y %H:%M'
+      short: ! '%d %b %H:%M'
+    pm: pm
+
+  will_paginate:
+    next_label: suivant →
+    page_entries_info:
+      multi_page: ! '%{model} %{from} - %{to} sur %{count} au total'
+      multi_page_html: ! '%{model} <strong>%{from} - %{to}</strong> sur <strong>%{count}</strong>
+        au total'
+      single_page:
+        one: ! '%{count} %{model} affiché(e)'
+        other: ! '%{count} %{model} affiché(e)s'
+      single_page_html:
+        one: ! '%{count} %{model} affiché(e)'
+        other: ! '%{count} %{model} affiché(e)s'
+    page_gap: ! '&hellip;'
+    previous_label: ← précédent
+
+
+  views:
+    pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Prev."
+      next: "Next &rsaquo;"
+      truncate: "..."
+    button:
+      import: "Import valid %{models}"
+      create_import: "Create import"
+  devise:
+    failure:
+      already_authenticated: "Vous êtes déjà connecté !"
+      unauthenticated: "Vous devez vous connecter pour continuer."
+      incorrect: "Your email or password is incorrect !"
+      unconfirmed: "Vous devez valider votre compte pour continuer."
+      locked: "Votre compte est verrouillé. Veuillez contacter un adminstrateur."
+      invalid: "Email ou mot de passe incorrect."
+      invalid_token: "Jeton d'authentification incorrect."
+      timeout: "Votre session est expirée, veuillez vous reconnecter pour continuer."
+      inactive: "Votre compte n'est pas encore activé."
+      not_authorized: "Vous n'êtes pas autorisé à effectuer cette action"
+    sessions:
+      signed_in: "Vous êtes à présent connecté."
+      signed_out: "Vous vous êtes correctement déconnecté."
+    passwords:
+      send_instructions: 'Vous allez recevoir les instructions de réinitialisation du mot de passe dans quelques instants'
+      updated: 'Votre mot de passe a été édité avec succès, vous êtes maintenant connecté'
+      updated_not_active: 'Votre mot de passe a été changé avec succès.'
+      send_paranoid_instructions: "Si votre e-mail existe dans notre base de données, vous allez recevoir un lien de réinitialisation par e-mail"
+      no_token: "Vous ne pouvez accéder à cette page sans passer par un e-mail de réinitialisation de mot de passe. Si vous êtes passé par un e-mail de ce type, assurez-vous d'utiliser l'URL complète."
+      minimum_length: "At least 6 characters"
+    confirmations:
+      send_instructions: 'Vous allez recevoir les instructions nécessaires à la confirmation de votre compte dans quelques minutes'
+      send_paranoid_instructions: 'Si votre e-mail existe dans notre base de données, vous allez bientôt recevoir un e-mail contenant les instructions de confirmation de votre compte.'
+      confirmed: 'Votre compte a été validé, vous êtes maintenant connecté'
+      account_created: 'Le compte [user] a été correctement créé.'
+    registrations:
+      signed_up: 'Bienvenue, vous êtes connecté'
+      signed_up_but_unconfirmed: 'Un message contenant un lien de confirmation a été envoyé à votre adresse email. Ouvrez ce lien pour activer votre compte.'
+      signed_up_but_inactive: "Vous êtes bien enregistré. Vous ne pouvez cependant pas vous connecter car votre compte n'est pas encore activé."
+      signed_up_but_locked: "Vous êtes bien enregistré. Vous ne pouvez cependant pas vous connecter car votre compte est verrouillé."
+      updated: 'Votre compte a été modifié avec succès.'
+      update_needs_confirmation: "Votre compte a bien été mis à jour mais nous devons vérifier votre nouvelle adresse email. Merci de vérifier vos emails et de cliquer sur le lien de confirmation pour finaliser la validation de votre nouvelle adresse."
+      destroyed: 'Votre compte a été supprimé avec succès. Nous espérons vous revoir bientôt.'
+    unlocks:
+      send_instructions: 'Vous allez recevoir les instructions nécessaires au déverrouillage de votre compte dans quelques instants'
+      unlocked: 'Votre compte a été déverrouillé avec succès, vous êtes maintenant connecté.'
+      send_paranoid_instructions: 'Si votre compte existe, vous allez bientôt recevoir un email contenant les instructions pour le déverrouiller.'
+    omniauth_callbacks:
+      success: 'Authentifié avec succès via %{kind}.'
+      failure: "Nous n'avons pas pu vous authentifier via %{kind} : '%{reason}'."
+    mailer:
+      confirmation_instructions:
+        subject: "Instructions de confirmation"
+      reset_password_instructions:
+        subject: "Instructions pour changer le mot de passe"
+      unlock_instructions:
+        subject: "Instructions pour déverrouiller le compte"
+
+
+  activerecord:
+    models:
+      payment_mode:
+        one: 'payment mode'
+        other: 'payment modes'
+      payment_term:
+        one: 'payment term'
+        other: 'payment terms'
+      campaign:
+        one: 'campaign'
+        other: 'campaigns'
+      account_category:
+        one: "account's category"
+        other: "account's categories"
+      mail_event_type:
+        one: "Email event type"
+        other: "Email event types"   
+    attributes:
+      account_category:
+        name: 'Name'
+      mail_event_type:
+        name: 'Name'
+        pattern: 'Pattern'
+        at_beginning: 'At beginning'
+        event_type: "Event type"        
+
+
+  app:
+    at: at
+    save_undefined_error: "An error has occurred while recording !"
+    delete_undefined_error: "An error has occurred while deleting !"
+    load_undefined_error: "An error has occurred while reading file line !"
+    check_undefined_error: "An error has break anomaly detection !"
+    constants:
+      term_types: ['net', 'month-end']
+    default:
+      all: "No filter"
+      subject: subject
+      define_article_male: the
+      define_article_apostrohpe: the
+      define_article_female: the
+      undefine_article_male: a
+      undefine_article_female: a
+      undefine_article_plural: some
+      new_male: "new"
+      new_female: "new"
+    caption:
+      importable_accounts: "Importables accounts"
+      warning_anomaly: "Non-blocking anomalies for import"
+      error_anomaly: "Bloking anomalies for import"
+    actions:
+      actions: Actions
+      create: Create
+      new: New
+      update: Update
+      edit: Edit
+      edition: Edition
+      destroy: Delete
+      show: Show
+      do: Do
+      created_by: "Created by"
+      created_at_female: "Created at"
+      updated_by: "Last updated by"
+      filter: "Filter"
+      updated_contact: "Updated contact"
+      updated_account: "Updated account"
+      create_account_category: "Create account's category"
+      edit_account_category: "Edit account's category"
+      update_account_category: "Update account's category"
+      delete_account_category: "Delete account's category"
+      create_mail_event_type: "Create event's type of the email"
+      edit_mail_event_type: "Edit event's type of the email"
+      update_mail_event_type: "Update event's type of the email"
+      delete_mail_event_type: "Delete event's type of the email"      
+      choose_file: "Choose a file"
+      show_valid_import: "Show valid imported %{model}"
+      validate: "Validate"
+      recalculate_duplicates: "Recalculate duplicates"
+      finished: "Finished"
+    cancan:
+      messages:
+        unauthorized: "Vous n'êtes pas autoriser à [action] [undefined_article] [model]"
+        access_error: "You can't access this resource !"
+    controllers:
+      EventType: "type d'évènement"
+      Event: event
+      Account: account
+      Contact: contact
+      Quotation: quotation
+      QuotationLine: "quotation line"
+      QuotationTemplate: "quotation template"
+      Relation: relation
+      Tag: tag
+      Task: task
+      User: user
+      Opportunity: opportunity
+      Document: document
+      Origin: origin
+      Activity: activité
+      Activity: activité
+      Role: role
+      Ability: ability
+      Contract_category: "Contract category"
+      Contract: "contract"
+      Extraction: extraction
+      Campaign_completed_stage: "Campaign completed stage"
+      Campaign_result_stage: "Campaign result stage"
+      Account_category: "Account category"
+      Mail_event_type: "Email event type"
+    model:
+      Account: Account
+      Contact: Contact
+      User: User
+      Quotation: Quotation
+      Task: Task
+      Opportunity: Opportunity
+      Event: Event
+      EventType: "Event type"
+      QuotationTemplate: "Quotation template"
+      Document: "Document"
+      Email: "E-mail"
+      NotificationCenter: "Notifications center"
+      Origin: "Origin"
+      Activity: "Activity"
+      Contract: "Contract"
+      Payment_mode: "payment mode"
+      Payment_modes: "payment modes"
+      Payment_term: "payment term"
+      Payment_terms: "payment terms"
+      Account_category: "account category"
+      Mail_event_type: "Email event type"
+    roles:
+      details: "Roles specification"
+      admin: Administrator
+      admin_description: "This is the application's administrator. He can do anything."
+      super_user: Super User
+      super_user_description: "He can configure the application and delete anything he want."
+      user: User
+      user_description: "He can delete only his own elements."
+      user_wo_delete: "User without delete"
+      user_wo_delete_description: "He can create all data, update only his data, and can't delete anything."      
+      restricted_user: Restricted User
+      restricted_user_description: "He can create and update his data but can't delete anything."
+      readonly_user: Read-only User
+      readonly_user_description: "He can just read."
+    money:
+      excl_tax: HT
+      incl_tax: TTC
+      tax: VAT
+      excluding_taxes: "Excluding taxes"
+      including_taxes: "Including taxes"
+    priority:
+      low: "Low"
+      normal: "Normal"
+      high: "High"
+      urgent: "Urgent"
+    status:
+      todo: "To do"
+      in_progress: "In progress"
+      negotiation: "Negotiation"
+      completed: "Completed"
+      canceled: "Canceled"
+      detected: "Detected"
+      won: "Won"
+      lost: "Lost"
+      save: "Saved"
+      accepted: "Accepted"
+      refused: "Refused"
+    fields:
+      colon: " : "
+      element: "Element"
+      detail: Detail
+      label: Label
+      term: Term
+      description: Description
+      assigned: "Assigned to"
+      collegue: Colleague
+      emailToCollegue: "Envoyer un Mail à ce collaborateur"
+      update_attach: "Modifier la pièce jointe"
+      attach: "Attachment"
+      attaches: "Attachments"
+      present_attach: "Pièce-jointe actuelle"
+      state: 'State'
+      remark: Remark
+      estimated_amount: "Montant estimé"
+      estimated_profit: "Marge estimée"
+      ref: "Référence"
+      ref_account: "Référence client"
+      accounting_code: "Accounting code"
+      quotation_validity: "Validité du Devis"
+      pay_mode: "Mode de réglement"
+      designation: Désignation
+      price_excl_tax: "Prix HT"
+      profit_excl_tax: "Marge HT"
+      quantity: Quantity
+      present_document: "Document actuel"
+      update_document: "Modifier le document"
+      priority: Priority
+      subject: Subject
+      name: Name
+      company: "Company"
+      adress1: "Adress"
+      adress2: "Adress (next)"
+      zip: "Zip"
+      city: "City"
+      country: "Country"
+      date: "Date"
+      profit_margin: "Profit margin"
+      estimate: "Estimate"
+      total_excluding_taxes: "Total excluding taxes"
+      active: "Active"
+      size: "Size"
+      content: "Content"
+      category: "Category"
+      account_category: "Category"
+      origin: "Origin"
+      activity: "Activité"
+      action: "Action"
+      type: "Type"
+      author: "Author"
+      adress: "Adress"
+      phone: "Phone"
+      fax: "Fax"
+      web: "Web Site"
+      anomaly: "Notes"
+      forename: "Forename"
+      title: "Title"
+      mobile: "Mobile"
+      email: "E-mail"
+      job: "Job"
+      notes: "Notes"
+      invalid: "invalid"
+      probability: "Probability of succes"
+      duplicate: "Disabled duplicates detection for this"
+      percentage: "Percentage"
+    message:
+      confirm:
+        delete: "Confirm delete ?"
+        delete_before_import: "This %{model} won't be imported !"
+        delete_import: "Warning: the removal of import will cause the removal of all items related to this import (contacts or accounts) ! Do you confirm the suppression ?"
+        delete_contact: "Warning: the removal of this contact could cause loss of informations for linked elements as events, tasks, accounts... Do you confirm ?"
+        validate_account: "Validate this account ?"
+        delete_all_invalids_accounts: "Confirm delete of all invalids accounts"
+        delete_all_invalids_contacts: "Confirm delete of all invalids contacts"
+      alert:
+        no_account_pending_validation: "No account pending validation"
+        no_contact_pending_validation: "No contact pending validation"
+        no_import: "No import !"
+        accounts_in_anomaly: "%{nbr} invalidate(s) account(s) !"
+      notice:
+        created_account: "Account has been created !"
+        updated_account: "Account has been updated !"
+        deleted_account: "Account has been deleted !"
+        created_contact: "Contact has been created !"
+        updated_contact: "Contact has been updated !"
+        deleted_contact: "Contact has been deleted !"
+        created_payment_mode: "Payment mode has been created !"
+        updated_payment_mode: "Payment mode has been updated !"
+        deleted_payment_mode: "Payment mode has been deleted !"
+        created_payment_term: "Payment term has been created !"
+        updated_payment_term: "Payment term has been updated !"
+        deleted_payment_term: "Payment term has been deleted !"
+        created_campaign: "Campaign has been created !"
+        updated_campaign: "Campaign has been updated !"
+        deleted_campaign: "Campaign has been deleted !"
+        created_account_category: "Account's category has been created !"
+        updated_account_category: "Account's category has been updated !"
+        deleted_account_category: "Account's category has been deleted !"
+        created_mail_event_type: "Event's type of the email has been created !"
+        updated_mail_event_type: "Event's type of the email has been updated !"
+        deleted_mail_event_type: "Event's type of the email has been deleted !"
+        confirm_import_account: "%{nbr} accounts have been imported !"
+        confirm_import_contact: "%{nbr} contacts have been imported !"
+        delete_import: "Import have been deleted !"
+        import_done: "Import ready for validation"
+        validate_account: "Account have been validated !"
+        recalculate_duplicates: "Duplicates have been recalculated : %{nbr} duplicate(s)"
+      error:
+        delete_error: "An error occured when deleting this record"
+        update_error: "An error occured when updating this record"
+        create_error: "An error occured when creating this record"
+        occured_error: "An error occured"
+  title:
+    dashboard: "Dashboard"
+    actor: "Actor"
+    trade: "Trade"
+    show_all_task: "Show all my tasks"
+    show_all_event: "Show all events"
+    show_all_opportunity: "Show all opportunities"
+    show_all_quotation: "Show all quotations"
+    latest_event: "Latest Events"
+    statistic: "Statistic"
+    filter_tasks: "Tasks Filter"
+    search_actor: "Search an actor..."
+    reporting: "Reporting"
+    filter_reporting: "Reporting Filter"
+    about: "About"
+    registered_users : "Registered Users"
+    configuration_CoRM : "CoRM's Configuration"
+    import_all: "Imports list"
+    new_import: "New import of "
+    accounts: "accounts"
+    contacts: "contacts"
+    import_accounts_waiting: "Imports accounts waiting for validation"
+    import_contacts_waiting: "Imports contacts waiting for validation"
+    contacts_extract: "Contacts extraction"
+    accounts_extract: "Accounts extraction"
+  link:
+    upload_csv_model: "Download file model import"
+    back: "Back"
+    delete_contact: "Delete contact"
+    delete_account: "Delete account"
+    delete_import: "Delete import"
+    edit: "Edit %{article} %{model}"
+    export: "Export"
+  url:
+    localization: "https://www.google.com/maps/dir/Current+location/"    
+  various:
+    my: "My"

@@ -1,0 +1,147 @@
+<%# Récupération du des fonctions %>
+<% content_for(:attachments_js) do %>
+    <%= javascript_include_tag "attachments" %>
+<% end %>
+
+<% colon = t('app.fields.colon') %>
+<%= nested_form_for(@opportunity , :html => { :class => "well "}) do |f| %>
+  <div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= f.label(:name, t('app.fields.label') + colon) %></div>
+      <div><p><%= f.text_field :name, { :class => 'required' } %></p><span class="req"/></span></div>
+		</div>
+	</div>
+  <div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= f.label(:term, t('app.fields.term') + colon) %></div>
+			<div><p><%= f.text_field :term, { :value => (@opportunity.term.strftime('%d/%m/%Y') unless @opportunity.term.blank?) } %></p></div>
+		</div>
+	</div>
+	<div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= f.label(:description, t('app.fields.description') + colon) %></div>
+			<%= f.text_area :description, :rows => "5", :style => 'width: 50%;' %>
+		</div>
+	</div>
+  <div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= label_tag('account-search', t('app.model.Account') + colon) %></div>
+			<div>
+				<p>
+					<%= text_field_tag(nil, (@opportunity.account.company unless @opportunity.account.nil?), { :placeholder => 'Rechercher', :class => "typeahead-account-search #{'required' unless !@opportunity.mandatory_account_setting?}" , :type => 'search', :autocomplete => 'off', 'data-field' => 'account_id' }) %>
+					<% if @opportunity.mandatory_account_setting? then %> <span class="req"/></span><% end %>
+					<%= image_tag('/assets/icons/loading.gif', :alt => 'Please wait...', :class => 'loading hidden') %>
+					<span class="label label-info inline" id="task_notice" style="display: none; margin-left: 2em;">
+					  <i class="icon-warning-sign icon-white"></i> Un événement sera créé sur le compte correspondant
+					</span>
+					<%= f.text_field :account_id, :value => number_with_precision(f.object.account_id, :separator => '', :precision => 0, :delimiter => ''),  :style => 'display: none; visible: none;', :id => 'account_id'  %>
+				</p>
+			</div>
+		</div>
+	</div>
+  <div id="nameContacts">
+    <%= render :partial => 'contacts' %>
+  </div>
+	<div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= f.label(:user_id, t('app.fields.assigned') + colon) %></div>
+			<p>
+				<%= f.collection_select :user_id, User.all_reals, :id, :full_name, { :selected => (@opportunity.user.nil?() ? current_user.id : @opportunity.user.id) }, :class => 'assigned_to' %>
+				<label for="opportunity_mail" class="checkbox right-field">
+          <%= check_box_tag(:mail, :yes, false, { :id => 'opportunity_mail' }) %>
+		Envoyer un Mail à ce collaborateur
+				</label>
+			</p>
+	  </div>
+  </div>
+
+    <div id="attachments">
+      <%= f.fields_for :opportunity_attachments do |ta| %>
+        <div class="row row-fluid">
+          <div class="field full">
+            <div class="span2"></div>
+            <% if ta.object.new_record? %>
+              <%= ta.file_field :attach, required: true %>
+              <script>$ (":file").filestyle({buttonText: 'Choisir un fichier'});</script>
+            <% else %>
+              <%= link_to ta.object.attach_file_name, ta.object.attach.url %>
+            <% end %>
+            <%= ta.link_to_remove "", class: 'icon-remove' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="row row-fluid">
+      <div class="field full">
+        <div class="span2"></div><%= f.link_to_add raw('<i class="icon-plus"></i> Ajouter une pièce-jointe'), :opportunity_attachments, data: { target: '#attachments' } %>
+      </div>
+    </div>
+
+	<div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= f.label(:statut ,t('app.fields.state') + colon) %></div>
+			<p><%= f.select :statut, Opportunity::STATUTS %></p>
+		</div>
+	</div>
+
+	<div class="row row-fluid">
+	    <div class="field full">
+		    <div class="span2"><%= label(:prob ,"#{t('app.fields.probability')} :") %></div>
+		    <p><%= f.range_field :probability, :in=>0...101, :step=>25, :id=>"slider" %></p>
+		    <div id="prob">
+			<% if !@opportunity.probability.nil? %>
+			    <%= @opportunity.probability %>
+			<% else %>
+			     50%
+			<% end %>
+		    </div>
+		    <!-- script is for show dynamic value of range -->
+		    <script>
+			$("#slider").change(function () {
+			var newValue = $('#slider').val();
+			$("#prob").html(newValue+"%");
+			});
+		    </script>
+	    </div>
+	</div>
+
+	<div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= f.label(:remark, t('app.fields.remark')) %></div>
+			<%= f.text_area :remark , :rows => "5", :style => 'width: 50%;' %>
+		</div>
+	</div>
+	<div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= f.label(:amount, t('app.fields.estimated_amount') + colon) %></div>
+			<p><%= f.text_field(:amount, :value => (@opportunity.amount.blank?() ? '00.00' : @opportunity.amount)) %><span class="bold">&nbsp;€ <%= t('app.money.excl_tax') %></span></p>
+		</div>
+  </div>
+	<div class="row row-fluid">
+		<div class="field full">
+      <div class="span2"><%= f.label(:profit, t('app.fields.estimated_profit') + colon) %></div>
+			<p><%= f.text_field :profit , :value => (@opportunity.profit.blank?() ? '00.00' : @opportunity.profit) %><span class="bold">&nbsp;€ <%= t('app.money.excl_tax') %></span></p>
+		</div>
+  </div>
+	<% if !@opportunity.id.nil? or !@opportunity.updated_by.nil? %>
+	<div class="row row-fluid">
+		<div class="field full">
+			<% if !@opportunity.id.nil? %>
+			<p><%= t('app.actions.created_by') %> <strong><%= @opportunity.author.full_name %></strong>, <%= t('app.at') %> <strong><%= @opportunity.created_at.strftime("%d/%m/%y à %H:%M") %></strong>.</p>
+		  <% end %>
+		</div>
+    <div class="field full">
+			<% if !@opportunity.updated_by.nil? %>
+			<p><%= t('app.actions.updated_by') %> <strong><%= @opportunity.editor.full_name %></strong>, <%= t('app.at') %> <strong><%= @opportunity.updated_at.strftime("%d/%m/%y à %H:%M") %></strong>.</p>
+			<% end %>
+	  </div>
+	</div>
+  <% end %>
+  <hr />
+  <div class="row row-fluid">
+	<%= if !@opportunity.id.nil? then f.button "Modifier l'opportunité", :type => :submit, :class =>"btn btn-primary",:id =>"opportunity_submit_form" else f.button 'Créer une opportunité', :type => :submit, :class =>"btn btn-primary",:id =>"opportunity_submit_form" end %>
+	<%= if !@opportunity.id.nil? then link_to '<i class="fa fa-trash fa-lg"></i>'.html_safe, opportunity_path(@opportunity), :title => "Supprimer l'opportunité", :confirm => 'Confirmer la suppression ?', :class =>"pull-right btn", :method => :delete end %>
+
+  </div>
+<% end %>

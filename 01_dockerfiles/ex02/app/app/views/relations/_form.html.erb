@@ -1,0 +1,58 @@
+<%  colon = t('app.fields.colon') %>
+<%= form_for(@relation, :html => { :class => "well "}) do |f| %>
+  <% if @relation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@relation.errors.count, "error") %> prohibited this relation from being saved:</h2>
+
+      <ul>
+      <% @relation.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= label_tag('account-search', t('app.model.Account') + ' source' + colon) %></div>
+			<div>
+				<p>
+					<%= text_field_tag(nil, (@relation.account1.company unless @relation.account1.nil?), { :placeholder => 'Rechercher', :class => 'typeahead-account-search', :type => 'search', :autocomplete => 'off', 'data-field' => 'account1_id' }) %>
+					<%= image_tag('/assets/icons/loading.gif', :alt => 'Please wait...', :class => 'loading hidden') %>
+					<%= f.text_field :account1_id, { :style => 'display: none; visible: none;', :id => 'account1_id' } %><span class='req'/>
+				</p>
+			</div>
+		</div>
+	</div>
+  <div class="row row-fluid">
+		<div class="field full">
+      <div class="span2"><%= f.label(:name, "Relation :") %></div>
+      <p><%= f.text_field :name, { :class => 'required' }%></p><span class='req'/>
+    </div>
+	</div>
+  <div class="row row-fluid">
+		<div class="field full">
+			<div class="span2"><%= label_tag('account-search', t('app.model.Account')  + ' cible'+ colon) %></div>
+			<div>
+				<p>
+					<%= text_field_tag(nil, (@relation.account2.company unless @relation.account2.nil?), { :placeholder => 'Rechercher', :class => 'typeahead-account-search', :type => 'search', :autocomplete => 'off', 'data-field' => 'account2_id' }) %>
+					<%= image_tag('/assets/icons/loading.gif', :alt => 'Please wait...', :class => 'loading hidden') %>
+					<%= f.text_field :account2_id, { :style => 'display: none; visible: none;', :id => 'account2_id' } %><span class='req'/>
+				</p>
+			</div>
+		</div>
+	</div>
+	<% if !@relation.id.nil? %>
+  <div class="row row-fluid">
+		<div class="field full"> Créée par : <%= @relation.author.full_name %>, le </strong><%= @relation.created_at.strftime("%d/%m/%y Ã  %H:%M") %>. </div>
+		<% if !@relation.updated_by.nil? %>
+			<div class="field full"> Dernièrement modifiée par : <%= @relation.editor.full_name %>, le <%= @relation.updated_at.strftime("%d/%m/%y Ã  %H:%M") %>. </div>
+		<% end %>
+	</div>
+	<% end %>
+	<hr />
+  <div class="field">
+    <%= if @relation.id.nil? then f.button 'Créer une relation', :type => :submit, :class =>"btn btn-primary" else f.button 'Modifier la relation', type: :submit, :class =>"btn btn-primary" end %>
+	<%= if !@relation.id.nil? then  link_to '<i class="fa fa-trash fa-lg"></i>'.html_safe, @relation,:title => "Supprimer la relation", :confirm => 'Confirmer la suppression ?', :class =>"pull-right btn", :method => :delete end %>
+  </div>
+<% end %>

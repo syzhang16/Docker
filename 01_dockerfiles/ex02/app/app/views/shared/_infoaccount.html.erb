@@ -1,0 +1,138 @@
+<div id="account-info-container">
+  <p>
+    <%= link_to '<i class="fa fa-home fa-2x action-icon"></i>'.html_safe, edit_account_path(@account),{:title => "Éditer le compte"} %> 
+    <%= link_to '<i class="fa fa-map-marker fa-2x action-icon"></i>'.html_safe, "#{t("url.localization")}#{@account.localization_adress}" ,{:target => "_blank"}%>
+    <i>(<%= @account.account_category.name unless @account.account_category.nil? %>)</i>
+
+    <% unless @account.active %>
+      <span title="Compte désactivé"><i class="fa fa-ban fa-2x pull-right"></i></span>
+    <% end %>
+
+    <br />
+  <% if !@account.company.blank? %>
+    <b><%= @account.company %></b><br />
+  <% end %>
+  <% if !@account.adress1.blank? %>
+    <%= @account.adress1 %><br />
+  <% end %>
+  <% if !@account.adress2.blank? %>
+    <%= @account.adress2 %><br />
+  <% end %>
+  <% if !@account.zip.blank? or !@account.city.blank? %>
+    <%= @account.zip unless @account.zip.blank? %><%= " - " if !@account.zip.blank? and !@account.city.blank? %><%= @account.city unless @account.city.blank? %><br />
+  <% end %>
+  <% if !@account.tel.blank? %>
+    <i class="fa fa-phone fa-lg fa-fw" title="Téléphone"></i>
+      <% if @setting.clicktocall %>
+	<%= link_to @account.tel.html_safe, "tel:#{@account.tel}" ,{:title => "Click-to-call", :class =>"action-tel"}%>
+      <% else %>
+	<%= @account.tel %>
+      <% end %>
+    <br />
+  <% end %>
+  <% if !@account.fax.blank? %>
+    <i class="fa fa-fax fa-lg fa-fw" title="Fax"></i> <%= @account.fax %><br />
+  <% end %>
+  <% if !@account.email.blank? %>
+    <%= mail_to(@account.email, nil, :class => 'ellipse') %>
+  <% end %>
+  <% if !@account.web.blank? %>
+    <% url = @account.web %>
+    <% if !url[/http:\/\//].nil? %>
+      <% url = url[7..url.length] %>
+    <% elsif !url[/https:\/\//].nil? %>
+      <% url = url[8..url.length] %>
+    <% end %>
+    <%= link_to(url, @account.web, :target => "_blank", :class => 'ellipse') %>
+  <% end %>
+  <% if !@account.user.blank? %>
+    <i class="fa fa-user fa-lg fa-fw" title="Collaborateur"></i> <%= @account.user.full_name %><br />
+  <% end %>  
+  </p>
+</div>
+<hr>
+<div id="contacts_list">
+<% if !@account.contacts.nil? and @account.contacts.length > 0 %>
+
+<% @account.contacts.order("active DESC, surname ASC").each do |contact| %>
+  <div class="contact-container">
+
+	<% unless contact.active %>
+      <span title="Contact désactivé"><i class="fa fa-ban fa-2x pull-right"></i></span>
+    <% end %>
+
+	<% if contact.title == "Mme"%>
+      <%= link_to image_tag("glyphicons/glyphicons_035_woman.png"), edit_contact_path(contact),{:title => "Éditer le contact"} %> <% if !contact.job.blank? then %> <i class="contact-job">(<%= contact.job %>)</i><% end %>
+    <% elsif contact.title == "M." %>
+      <%= link_to image_tag("glyphicons/glyphicons_034_old_man.png"), edit_contact_path(contact),{:title => "Éditer le contact"} %><% if !contact.job.blank? then %><i class="contact-job"> (<%= contact.job %>)</i><% end %>
+    <% else %>
+      <%= link_to image_tag("glyphicons/glyphicons_003_user_unknow.png" ), edit_contact_path(contact),{:title => "Éditer le contact"} %><% if !contact.job.blank? then %><i class="contact-job"> (<%= contact.job %>)</i><% end %>
+    <% end %>
+    <p>
+      <b><%= contact.full_name %></b><br />
+    <% if !contact.tel.blank? %>
+      <i class="fa fa-phone fa-lg fa-fw" title="Téléphone"></i><% if @setting.clicktocall %><%= link_to contact.tel.html_safe, "tel:#{contact.tel}" ,{:title => "Click-to-call", :class =>"action-tel"}%><% else %><%= contact.tel %><% end %><br />
+    <% end %>
+    <% if !contact.mobile.blank? %>
+      <i class="fa fa-mobile fa-lg fa-fw" title="Mobile"></i><% if @setting.clicktocall %><%= link_to contact.mobile.html_safe, "tel:#{contact.mobile}" ,{:title => "Click-to-call", :class =>"action-tel"}%><% else %><%= contact.mobile %><% end %><br />
+    <% end %>
+    <% if !contact.fax.blank? %>
+      <i class="fa fa-fax fa-lg fa-fw" title="Fax"></i><%= contact.fax %>
+    <% end %>
+    <% if contact.email != "" %>
+      <%= mail_to(contact.email, nil, :class => 'ellipse') %>
+    <% end %>
+    </p>
+  </div>
+<% end # end each
+%>
+<% end #end if
+%>
+</div>
+<% if !@account.contacts.nil? and @account.contacts.length > 0 %>
+<hr id="contact-hr" />
+<% else %>
+<hr id="contact-hr" style="display: none;" />
+<% end %>
+<% if can? :create, @account => Contact %>
+<%= form_for( [@account, @account.contacts.new], :html => {:class => 'well'}) do |f| %>
+<p><%=image_tag("glyphicons/glyphicons_006_user_add.png")%>Ajouter un contact</p>
+  <div class="row small-fields">
+    <div class="field full">
+      <label class="top" style="width: 100%; margin-bottom: 0;">Prénom</label>
+      <%= f.text_field :forename %>
+    </div>
+    <div class="field full">
+      <label class="top" style="width: 100%; margin-bottom: 0;">Nom</label>
+      <%= f.text_field :surname %>
+    </div>
+    <div class="field full">
+      <label class="top" style="width: 100%; margin-bottom: 0;">Titre</label>
+      <%= select :contact, :title, Contact::TITLES, { :include_blank => true } %>
+    </div>
+    <div class="field full">
+      <label class="top" style="width: 100%; margin-bottom: 0;">Tél</label>
+      <%= f.text_field :tel %>
+    </div>
+    <div class="field full">
+      <label class="top" style="width: 100%; margin-bottom: 0;">Fax</label>
+      <%= f.text_field :fax %>
+    </div>
+    <div class="field full">
+      <label class="top" style="width: 100%; margin-bottom: 0;">Mobile</label>
+      <%= f.text_field :mobile %>
+    </div>
+    <div class="field full">
+      <label class="top" style="width: 100%; margin-bottom: 0;">E-Mail</label>
+      <%= f.text_field :email %>
+    </div>
+    <div class="field full">
+      <label class="top" style="width: 100%; margin-bottom: 0;">Fonction</label>
+      <%= f.text_field :job %>
+    </div>
+  </div>
+  <%= f.hidden_field :account_id %>
+  <br>
+  <div class = "actions"><%= f.submit "Ajouter un Contact" %></div>
+<% end %>
+<% end %>

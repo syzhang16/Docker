@@ -1,0 +1,114 @@
+
+<%= render 'title', :locals => { :title => @title }%>
+
+<!-- FILTER -->
+
+<div id="task_value" class="container-fluid">
+  <div class="well">
+      <%= form_tag(contacts_path, method: :get) do %>
+	  <div class="row row-fluid">
+
+	  <%= render 'filter' %>
+
+
+	  <%= submit_tag "Filtrer", :class =>"btn "%>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- END FILTER -->
+
+<div class="container-fluid">
+
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th class="text-center">Civ.</th>
+        <th class="text-center">Nom</th>
+        <th class="text-center">Pr&eacute;nom</th>
+        <th class="text-center">Soci&eacute;t&eacute;</th>
+        <th class="text-center">T&eacute;l</th>
+        <th class="text-center">Mobile</th>
+        <th class="text-center">E-mail</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @contacts.each do |contact| %>
+        <tr>
+          <% if !contact.title.blank? %>
+            <% then %>
+            <td class="text-center">
+              <%= if contact.title == "M." then image_tag("glyphicons/glyphicons_034_old_man.png") end%>
+              <%= if contact.title == "Mme" then image_tag("glyphicons/glyphicons_035_woman.png") end%>
+            </td>
+          <% else %>
+            <td class="text-center">-</td>
+          <% end %>
+
+          <% if !contact.surname.blank? %>
+            <% then %>
+            <td class="text-center"><%= contact.surname %></td>
+          <% else %>
+            <td class="text-center">-</td>
+          <% end %>
+
+          <% if !contact.forename.blank? %>
+            <% then %>
+            <td class="text-center"><%= contact.forename %></td>
+          <% else %>
+            <td class="text-center">-</td>
+          <% end %>
+
+          <% if !contact.account.nil? %>
+            <% then %>
+            <td class="text-center"><%= link_to contact.account.company , account_events_url(contact.account),{:title => "Afficher les évenements"} %></td>
+          <% else %>
+            <td class="text-center">-</td>
+          <% end %>
+
+
+          <% if !contact.tel.blank? %>
+            <% then %>
+            <td class="text-center">
+	      <% if @setting.clicktocall %>
+		<%= link_to contact.tel.html_safe, "tel:#{contact.tel}" ,{:title => "Click-to-call", :class =>"action-tel"}%>
+	      <% else %>
+		<%= contact.tel %>
+	      <% end %>
+	    </td>
+          <% else %>
+            <td class="text-center">-</td>
+          <% end %>
+
+          <% if !contact.mobile.blank? %>
+            <% then %>
+            <td class="text-center">
+	      <% if @setting.clicktocall %>
+		<%= link_to contact.mobile.html_safe, "tel:#{contact.mobile}" ,{:title => "Click-to-call", :class =>"action-tel"}%>
+	      <% else %>
+		<%= contact.mobile %>
+	      <% end %>
+	    </td>
+          <% else %>
+            <td class="text-center">-</td>
+          <% end %>
+
+          <% if !contact.email.blank? %>
+            <% then %>
+            <td class="text-center"><%= mail_to(contact.email)%></td>
+          <% else %>
+            <td class="text-center">-</td>
+          <% end %>
+
+
+          <td class="text-center"><%= link_to '<i class="fa fa-edit fa-2x action-icon"></i>'.html_safe, edit_contact_path(contact),{:title => "Éditer le contact"} %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @contacts %>
+
+</div>

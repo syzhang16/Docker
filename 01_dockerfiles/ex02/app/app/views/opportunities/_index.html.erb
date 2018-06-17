@@ -1,0 +1,152 @@
+<div class="container-fluid">
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th class="text-center">Statut</th>
+        <th class="text-center">Compte</th>
+        <th class="text-center">Libellé</th>
+        <th class="text-center">Contact</th>
+        <th class="text-center">Estimation
+				<% if @sort == "amount" and @direction == "ASC" then %>
+				  <%= link_to '<i class="fa fa-caret-down action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "amount", :direction => "DESC"}) %>
+				<% elsif @sort == "amount" and @direction == "DESC" then %>
+				  <%= link_to '<i class="fa fa-caret-up action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "amount", :direction => "ASC"}) %>
+				<% else %>
+				  <%= link_to '<i class="fa fa-sort action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "amount", :direction => "DESC"}) %>
+				<% end %>
+	</th>
+        <th class="text-center">Marge
+				<% if @sort == "profit" and @direction == "ASC" then %>
+				  <%= link_to '<i class="fa fa-caret-down action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "profit", :direction => "DESC"}) %>
+				<% elsif @sort == "profit" and @direction == "DESC" then %>
+				  <%= link_to '<i class="fa fa-caret-up action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "profit", :direction => "ASC"}) %>
+				<% else %>
+				  <%= link_to '<i class="fa fa-sort action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "profit", :direction => "DESC"}) %>
+				<% end %>
+	</th>
+	<th class="text-center"><%= t('app.actions.created_at_female') %>
+				<% if @sort == "created_at" and @direction == "ASC" then %>
+				  <%= link_to '<i class="fa fa-caret-down action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "created_at", :direction => "DESC"}) %>
+				<% elsif @sort == "created_at" and @direction == "DESC" then %>
+				  <%= link_to '<i class="fa fa-caret-up action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "created_at", :direction => "ASC"}) %>
+				<% else %>
+				  <%= link_to '<i class="fa fa-sort action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "created_at", :direction => "DESC"}) %>
+				<% end %>
+	</th>
+        <th class="text-center">Échéance
+				<% if @sort == "term" and @direction == "ASC" then %>
+				  <%= link_to '<i class="fa fa-caret-down action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "term", :direction => "DESC"}) %>
+				<% elsif @sort == "term" and @direction == "DESC" then %>
+				  <%= link_to '<i class="fa fa-caret-up action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "term", :direction => "ASC"}) %>
+				<% else %>
+				  <%= link_to '<i class="fa fa-sort action-icon"></i>'.html_safe, @opportunities_scopes.merge({:sort => "term", :direction => "DESC"}) %>
+				<% end %>
+	</th>
+        <th class="text-center">Affecté à</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @opportunities.each do |opportunity| %>
+      <tr>
+	<td class="text-center">
+          <% if opportunity.statut == "Détectée"%>
+          <span class="badge badge-important">
+          <% elsif opportunity.statut == "En cours"%>
+          <span class="badge badge-warning">
+          <% elsif opportunity.statut == "Négociation"%>
+          <span class="badge badge-warning">
+	  <% elsif opportunity.statut == "Gagnée"%>
+          <span class="badge badge-success">
+          <% elsif opportunity.statut == "Perdue"%>
+          <span class="badge badge-inverse">
+		  <% elsif opportunity.statut == "Abandonnée"%>
+          <span class="badge badge-inverse">
+		  <% elsif opportunity.statut == "Suspendue"%>
+          <span class="badge badge-inverse">
+          <% else %>
+          -
+          <% end %>
+		  <%= opportunity.statut %>
+		  </span>
+        </td>
+		<% if !opportunity.account.nil? %>
+		<td class="text-center"><%= link_to opportunity.account.company , account_events_url(opportunity.account),{:title => "Afficher les évènements"} %></td>
+		<% else %>
+		<td class="text-center">-</td>
+		<% end %>
+		<% if !opportunity.name.blank? %>
+		<td class="text-center"><%= link_to opportunity.name,  edit_opportunity_path(opportunity),{:title => "Éditer l'opportunité"} %></td>
+		<% else %>
+		<td class="text-center">-</td>
+		<% end %>
+		<% if !opportunity.contact.nil? %>
+		<td class="text-center"><%= link_to opportunity.contact.full_name, edit_contact_path(opportunity.contact) ,{:title => "Éditer le contact"} %></td>
+		<% else %>
+		<td class="text-center">-</td>
+		<% end %>
+		<% if !opportunity.amount.nil? %>
+		<td style="text-align :right;"><%= number_to_currency(opportunity.amount, :locale => :fr)  %> <strong> HT </strong></td>
+		<% else %>
+		<td class="text-center">-</td>
+		<% end %>
+		<% if !opportunity.profit.nil? %>
+		<td style="text-align :right;"><%= number_to_currency(opportunity.profit, :locale => :fr)  %> <strong> HT </strong></td>
+		<% else %>
+		<td class="text-center">-</td>
+		<% end %>
+              <%# Récupération de la date de création %>
+		    <% if !opportunity.created_at.nil? %>
+		      <td class="text-center"><%= opportunity.created_at.strftime("%d/%m/%y à %H:%M") %></td>
+		    <% else %>
+              <td class="text-center">-</td>
+                <% end %>
+		<% if !opportunity.term.blank? %>
+			<% if opportunity.term.to_date == Date.today %>
+				<td class="text-center"><span class="label label-info"><%= opportunity.term.strftime("%d/%m/%y") %></span></td>
+			<% else %>
+				<% if opportunity.term.to_date < Date.today %>
+					<td class="text-center"><span class="label label-important"><%= opportunity.term.strftime("%d/%m/%y") %></span></td>
+				<% else %>
+					<td class="text-center"><%= opportunity.term.strftime("%d/%m/%y") %></td>
+				<% end %>
+			<% end %>
+		<% else %>
+			<td class="text-center">-</td>
+		<% end %>
+		<% if !opportunity.user.nil? %>
+		<td class="text-center"><%= opportunity.user.full_name %></td>
+		<% else %>
+		<td class="text-center">-</td>
+		<% end %>
+		<td class="text-center"><%= link_to '<i class="fa fa-edit fa-2x action-icon"></i>'.html_safe, edit_opportunity_path(opportunity),{:title => "Éditer l'opportunité"}  %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+
+  <%= paginate @opportunities %>
+
+  <div class="pull-right">
+    <table class="table">
+      <tbody>
+	<tr>
+	  <td><h4><p>Montant total estimé :</p></h4></td>
+	  <td><h4><p class="text-right"><%= number_to_currency(@total_amount, :locale => :fr) %>  HT</p></h4></td>
+	</tr>
+	<tr>
+	  <td><h4><p>Marge totale estimée :</p></h4></td>
+	  <td><h4><p class="text-right"><%= number_to_currency(@total_profit, :locale => :fr) %>  HT</p></h4></td>
+	</tr>
+	<tr>
+	  <td> </td>
+	  <td>
+	    <%= link_to '<i class="fa fa-file-excel-o fa-2x action-icon"></i>'.html_safe, {format: "xlsx", params: params.except(:action, :controller)},{:title => "Télécharger au format Excel", :class => "pull-right"}%>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

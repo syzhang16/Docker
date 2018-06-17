@@ -1,0 +1,16 @@
+<div class="container-fluid" style="margin-top: 1em;">
+
+
+     <div class="well">
+       <div class="row-fluid">
+         <div class="span9">
+           <h2>Devis de <%= @account.company %></h2>
+         </div>
+         <%= link_to '<i class="fa fa-plus-circle fa-3x action-icon"></i>'.html_safe, new_account_quotation_path(account_id: @account.id) ,{:title => "Créer un devis", :class =>"pull-right"}%>
+       </div>
+     </div>
+
+
+</div>
+
+

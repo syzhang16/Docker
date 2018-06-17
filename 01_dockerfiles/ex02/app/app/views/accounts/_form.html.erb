@@ -1,0 +1,238 @@
+<%= form_for(@account, :html => { :class => "well form-horizontal"}) do |f| %>
+  <% if @account.errors.any? %>
+    <div id="error_explanation" class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4><%= t('app.message.error.occured_error') %></h4>
+      <ul>
+      <% @account.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :company, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :company ,{ :class => 'required'}  %><span class="req" />
+    </div>
+  </div>
+  
+  <% if @account.persisted? %>
+    <div class="control-group">
+      <%= f.label :active, class: "control-label"%>
+      <div class="controls">
+	<%= f.select :active, options_for_select([["Actif", true], ["Inactif", false]], selected: @account.active) %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :adress1, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :adress1 %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :adress2, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :adress2 %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :zip, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :zip %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :city, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :city %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :country, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :country %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :tel, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :tel %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :fax, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :fax %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :email, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :email %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :web, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :web %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :origin, class: "control-label"%>
+    <div class="controls">
+      <%= f.collection_select :origin_id, Origin.order('name ASC').all, :id, :name, :include_blank => true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :activity, class: "control-label"%>
+    <div class="controls">
+      <%= f.collection_select :activity_id, Activity.order('name ASC').all, :id, :name, :include_blank => true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :account_category, class: "control-label"%>
+    <div class="controls">
+      <%= f.collection_select :account_category_id, AccountCategory.order('name ASC'), :id, :name, :include_blank => false%>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :tags, class: "control-label"%>
+    <div class="controls">
+      <%= select_tag :display_account_tag, options_from_collection_for_select(@account.tags.order('name ASC').all, "id", "name"), {:size => 6, :multiple => true} %>
+      <a id="account_add_button" class="btn btn-success btn-mini" data-toggle="modal" href="#account_tag_modal" style="margin-bottom: 1em; margin-left: 2em;">Modifier Tag</a>
+      <div class="modal hide fade" id="account_tag_modal" style="width: 900px; margin-left: -450px;">
+	<%= render "modal_tags" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :turnover , class: "control-label" %>
+    <div class="controls">
+      <div class = "input-append">
+	<%= f.text_field :turnover , class: 'text-right' %>
+	<span class="add-on">
+	  <%= t('number.currency.format.unit') %>
+	</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :projected_turnover , class: "control-label" %>
+    <div class="controls">
+      <div class = "input-append">
+	<%= f.text_field :projected_turnover , class: 'text-right' %>
+	<span class="add-on">
+	  <%= t('number.currency.format.unit') %>
+	</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :registration_number , class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :registration_number %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :vat_number, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :vat_number %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :business_sector_code, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :business_sector_code %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :identifier, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :identifier %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :accounting_code, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :accounting_code %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :payment_term, class: "control-label"%>
+    <div class="controls">
+      <%= f.collection_select :payment_term_id, PaymentTerm.order('name ASC').all, :id, :name, :include_blank => true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :periodicity_billing, class: "control-label"%>
+    <div class="controls">
+      <%= f.text_field :periodicity_billing %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :user, class: "control-label"%>
+    <div class="controls">
+      <%= f.collection_select :user_id, @users, :id, :full_name, :include_blank => true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :notes, class: "control-label"%>
+    <div class="controls">
+      <%=f.text_area :notes , :display_with => :simple_format, :rows => "5", :style => 'width: 50%;' %>
+    </div>
+  </div>
+
+  <br />
+
+  <div class="control-group">
+    <% if !@account.id.nil? %>
+      <div class="span9"> Créé par : <%= @account.author.full_name %>, le </strong><%= @account.created_at.strftime("%d/%m/%y à %H:%M") %>. </div>
+      <br />
+      <% if !@account.modified_by.nil? %>
+	<div class="span9"> Dernièrement modifié par : <%= @account.editor.full_name %>, le <%= @account.updated_at.strftime("%d/%m/%y à %H:%M") %>. </div>
+	<br />
+      <% end %>
+    <% end %>
+  </div>
+
+	<hr />
+
+  <div class="row">
+    <%= if !@account.id.nil? then f.button 'Modifier le compte', :type => :submit, :class =>"btn btn-primary",:id =>"account_validate_form" else f.button 'Créer un compte', :type => :submit, :class =>"btn btn-primary",:id =>"account_validate_form" end%>
+  <% if current_user.has_role?(:admin) or current_user.has_role?(:super_user) %>
+      <%= if !@account.id.nil? then  link_to '<i class="fa fa-trash fa-lg"></i>'.html_safe, @account,:title => "Supprimer le compte", :confirm => 'Attention : La suppression du compte entraine la suppression de tous les éléments liés à ce compte (contacts, évènements, devis, documents...) ! Confirmez-vous la suppression ?', :class =>"pull-right btn", :method => :delete end %>
+  <% end %>
+
+  </div>
+
+</form>
+<% end %>
+
+

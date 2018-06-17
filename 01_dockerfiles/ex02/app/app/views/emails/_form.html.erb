@@ -1,0 +1,134 @@
+<%# Récupération du des fonctions %>
+<% content_for(:attachments_js) do %>
+    <%= javascript_include_tag "attachments" %>
+<% end %>
+
+<%= nested_form_for(@email, :url => {:action => "update" }, :html => { :class => "well "}) do |f| %>
+
+  <div class="row row-fluid">
+    <div class="field full">
+      <div class="span2">Envoyé à : </div>
+      <input type="text" class="field left" value=<%= @email.to.join(' ; ') %> readonly/>
+    </div>
+  </div>
+
+<%#Affichage du champ type d'evenement %>
+<div class="row row-fluid">
+	<div class="field full">
+		<div class="span2">
+			Type :
+		</div>
+		<div class="field">
+		    <%= f.collection_select :event_type_id, EventType.order('label'), :id, :full_type, :class =>"filter_coll", :include_blank => false %></p>
+
+		</div>
+	</div>
+</div>
+
+
+
+<%#Affichage du champ compte %>
+<div class="row row-fluid">
+  <div class="field full">
+    <div class="span2">
+	<%= f.label('account-search', t('app.model.Account') + t('app.fields.colon')) %></div>
+    <% company = nil
+	if (!@email.arbitrary_contact.blank?)
+	    contact = Contact.find(@email.arbitrary_contact.id)
+	    if (!contact.account_id.blank?)
+		    company = Account.find(contact.account_id)
+		end
+	elsif (!@email.arbitrary_account.blank?)
+	    company = @email.arbitrary_account
+	end %>
+	<% if company.blank? %>
+			<%= text_field_tag(nil, company, { :class => 'typeahead-account-search required', :type => 'search', :autocomplete => 'off', 'data-field' => 'account_id', :placeholder => 'Rechercher' }) %><span class="req"/>
+	<% else %>
+		<%= text_field_tag(nil, company.company, { :class => 'typeahead-account-search required', :type => 'search', :autocomplete => 'off', 'data-field' => 'account_id', :placeholder => 'Rechercher' }) %><span class="req"/>
+	<% end %>
+	    <%= f.text_field :account_id, { :style => 'display: none; visible: none;', :id => 'account_id' } %>
+		<%= image_tag('/assets/icons/loading.gif', :alt=> 'Please wait...', :class => 'loading hidden') %>
+    </div>
+</div>
+
+<%#Affichage du champ contact %>
+<div class="row row-fluid">
+	<div class="field full">
+		<div class="span2">
+			Contact :
+		</div>
+		<div class="field">
+        	<% if !company.nil? %>
+          	<%= collection_select :email, :contact_id, Contact.where(:account_id => company.id).order(:surname), :id, :full_name, {:include_blank => false }, { :class => "required", :id => 'contact_id' } %><span class="req"/>
+          <%= image_tag('/assets/icons/loading.gif', :alt => 'Please wait...', :class => 'loading hidden') %>
+        <% else %>
+          <%= collection_select :email, :contact_id, Contact.where(:account_id => 0), :id, :full_name, {:include_blank => false}, { :class => "required", :id => 'contact_id' } %><span class="req"/>
+          <%= image_tag('/assets/icons/loading.gif', :alt => 'Please wait...', :class => 'loading hidden') %>
+        <% end %>
+		</div>
+	</div>
+</div>
+
+<%#Affichage du champ objet %>
+<div class="row row-fluid">
+	<div class="field full">
+		<div class="span2">
+			Objet :
+		</div>
+		<%= f.text_field :object %><span class="req"/>
+	</div>
+</div>
+
+
+
+<%#Affichage du champ contenu %>
+<div class="row row-fluid">
+	<div class="field full">
+		<div class="span2">
+			Contenu :
+		</div>
+		<%= f.text_area :content, :rows => "5", :style => 'width: 50%;', :required => 'required' %><span class="req" />
+	</div>
+</div>
+
+<%# Affichage des pièces jointes si il y en a %>
+
+    <div id="attachments">
+      <%= f.fields_for :email_attachments do |ta| %>
+        <div class="row row-fluid">
+          <div class="field full">
+            <div class="span2"></div>
+            <% if ta.object.new_record? %>
+              <%= ta.file_field :attach, required: true %>
+              <script>$ (":file").filestyle({buttonText: 'Choisir un fichier'});</script>
+            <% else %>
+              <%= link_to ta.object.attach_file_name, ta.object.attach.url %>
+            <% end %>
+            <%= ta.link_to_remove "", class: 'icon-remove' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="row row-fluid">
+      <div class="field full">
+        <div class="span2"></div><%= f.link_to_add raw('<i class="icon-plus"></i> Ajouter une pièce-jointe'), :email_attachments, data: { target: '#attachments' } %>
+      </div>
+    </div>
+
+<%#Affichage du champ date %>
+<div class="row row-fluid">
+
+	<div class="span2" style="text-align: right; padding-right: 10px;">
+		Date :
+	</div>
+		<strong>
+		<%# Affichage de la date complète en gras, non modifiable %>
+			<%= @email.send_at.strftime("%d/%m/%Y à %H:%M") %>
+		</strong>
+</div>
+<%= f.hidden_field :id %>
+<div class="row row-fluid">
+<hr><%= if !@email.id.nil? then f.submit "Modifier l'email", :class =>"btn btn-primary" end %><hr/>
+</div>
+<% end %>

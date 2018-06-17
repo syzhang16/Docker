@@ -1,0 +1,94 @@
+<script>
+function display(id) {
+    var link = document.getElementById("display-" + id);
+    var div = document.getElementById("event-" + id);
+
+    if (div.className == "event hidden") {
+        link.innerHTML = "Moins d'informations";
+        div.className = "event";
+    } else {
+        link.innerHTML = "Plus d'informations";
+        div.className = "event hidden";
+    }
+}
+</script>
+<% if !@events.nil? and @events.length > 0 %>
+<div id="listing-event">
+  <%# <label class="checkbox" id="toggle-events-more"> %>
+  <%#   <input type="checkbox"/>Déplier tous les évenements %>
+  <%# </label> %>
+  <% @events.each do |e| %>
+  <div class="event-container">
+
+    <% if !e.event_type.nil? %>
+        <div class="event small" style="border-color: <%= e.event_type.bordercolor %> ;">
+        <% else %>
+        <div class="event small">
+    <% end %>
+      <div class="message row-fluid">
+        <%= render :partial => 'event_message', :locals => { :e => e, :css_class => 'content' } %>
+        <p class="time">
+          il y a <%= distance_of_time_in_words_to_now(e.date_begin) %>
+        </p>
+       <p class="content">
+        N° <%= e.id %>
+
+        <% if e.date_begin == e.date_end %>
+        - Date : <%= e.date_begin.strftime("%d/%m/%y à %H:%M") %>
+        <% else %>
+                <% if !e.date_begin.blank? %>
+                    - Début : <%= e.date_begin.strftime("%d/%m/%y à %H:%M") %>
+                <% end %>
+                <% if !e.date_end.blank? %>
+                    - Fin : <%= e.date_end.strftime("%d/%m/%y à %H:%M") %>
+                <% end %>
+        <% end %>
+
+
+
+        <% if e.date_begin != e.date_end %>
+        - Durée : <%= distance_of_time_in_words(e.date_begin, e.date_end, include_seconds: true) %>
+        <% end %>
+        <!--
+        <% if !e.contact.nil? %>
+        - Contact : <%= e.contact.full_name %>
+        <% end %>
+        <% if !e.event_type.nil? %>
+        - Type : <%= e.event_type.full_type %>
+        <% end %>
+        -->
+
+       </p>
+      <div class="more">
+        <% if !e.notes.blank? %>
+            <div class="notes"><pre class="no-style"><%= auto_link e.notes, html: { target: '_blank' } %></pre></div>
+        <% end %>
+        <% if !e.notes2.blank? %>
+            <div class="notes"><pre class="no-style"><i><%= e.notes2 %></i></pre></div>
+        <% end %>
+      </div>
+
+        <p class="time">
+
+          <% if can? :destroy, e %>
+            <%= link_to '<i class="fa fa-trash-o action-icon"></i>'.html_safe, event_path(e), :data => { :confirm => 'Confirmer la Suppression?'},:class => "" , :title => "Supprimer l'évènement", :method => :delete %>
+          <% end %>
+        </p>
+
+      <p class="content">
+        <% if !e.event_attachments.blank? %>
+            <%= e.event_attachments.length == 1? 'Pièce-jointe :' : 'Pièces-jointes :' %>
+            <% e.event_attachments.each do |attachment| %>
+                <%= link_to attachment.attach_file_name, attachment.attach.url, { :target => '_blank' } %>&nbsp;
+            <% end %>
+        <% end %>
+
+      </p>
+
+      </div>
+    </div>
+  </div>
+  <% end %>
+</div>
+<% end %>
+<%= paginate @events %>

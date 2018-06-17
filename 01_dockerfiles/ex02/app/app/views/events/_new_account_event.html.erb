@@ -1,0 +1,136 @@
+<%# Récupération du des fonctions %>
+<% content_for(:attachments_js) do %>
+    <%= javascript_include_tag "attachments" %>
+<% end %>
+
+<%= nested_form_for([@account, @event_new], :html => { :class => "well ", :multipart => true}) do |f| %>
+  <div class="row row-fluid by_2">
+    <div class="field-group">
+      <div class="field small-date">
+        <p><%= f.label :date_begin, "Début :", :class => 'top' %><%= f.text_field :date_begin, :value => Date.today.strftime("%d/%m/%Y"), class: "event_date", data: { provide: "datepicker" } %></p>
+      </div>
+      <div class="field time">
+        <%= f.label :date_begin, " à ", { :class => 'no-margin-bottom' } %><%= f.time_select :date_begin , :class => "event_time" %>
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="field small-date">
+        <p><%= f.label :date_end, "Fin : ", :class => 'top' %><%= f.text_field :date_end, :value => Date.today.strftime("%d/%m/%Y"), class: "event_date", data: { provide: "datepicker" } %></p>
+      </div>
+      <div class="field time text-center">
+        <%= f.label :date_end, " à ", { :class => 'no-margin-bottom' } %><%= f.time_select :date_end , :class => "event_time" %>
+      </div>
+    </div>
+  </div>
+  <div class="row row-fluid by_2">
+      <div class="field">
+        <p><%= f.label :contact_id, "Contact : ", :class => 'top' %><%= f.collection_select :contact_id, @account.contacts.order('surname'), :id, :full_name, :class =>"filter_coll", :include_blank =>!@event_new.mandatory_contact_setting? %>
+        <% if @event_new.mandatory_contact_setting? then %> <span class="req"/></span><% end %>
+        </p>
+      </div>
+      <div class="field">
+        <p><%= f.label :event_type_id, "Type : ", :class => 'top' %><%= f.collection_select :event_type_id, EventType.order('label'), :id, :full_type, :class =>"filter_coll", :include_blank => true %></p>
+      </div>
+  </div>
+  <div class="row row-fluid">
+    <div class="field full">
+      <%= f.label :notes, ("Description : ".concat(content_tag('span', nil, :class => 'req'))).html_safe, :class => 'top' %>
+      <%= f.text_area :notes, { :rows => "5", :style => 'width: 80%;', :class => 'required' } %>
+    </div>
+  </div>
+
+
+
+  <%#Affichage du champ d'ajout de pièce jointe %>
+
+    <div id="attachments">
+      <%= f.fields_for :event_attachments do |ta| %>
+        <div class="row row-fluid">
+          <div class="field">
+            <div class="span2"></div>
+            <% if ta.object.new_record? %>
+              <%= ta.file_field :attach, required: true %>
+              <script>$ (":file").filestyle({buttonText: 'Choisir un fichier'});</script>
+            <% else %>
+              <%= link_to ta.object.attach_file_name, ta.object.attach.url %>
+            <% end %>
+            <%= ta.link_to_remove "", class: 'icon-remove' %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="row row-fluid">
+      <div class="field">
+        <div class="span2"></div><%= f.link_to_add raw('<i class="icon-plus"></i> Ajouter une pièce-jointe'), :event_attachments, data: { target: '#attachments' } %>
+      </div>
+    </div>
+
+  <div class="row row-fluid">
+    <div class="field">
+      <label class="checkbox">
+        <%= check_box_tag :generate_task, "yes" %>
+        Générer une tâche liée à cet évènement
+      </label>
+    </div>
+  </div>
+
+  <div id="task_task_value" style="display: none;">
+    <div class="row">
+      <div class="field full">
+        <p class="full">
+          <%= label_tag('task_title', ("Sujet :".concat(content_tag('span', nil, :class => 'req'))).html_safe, :class=> 'top') %>
+          <%= text_field_tag 'task[title]', nil, :style => 'width: 80%;', :class => 'required' %>
+        </p>
+      </div>
+    </div>
+    <div class="row by_3">
+      <div class="field ">
+        <p>
+          <%= label_tag('task_statut', "Statut :", :class => 'top') %>
+
+          <%= select 'task', :statut , Task::STATUTS %>
+        </p>
+      </div>
+      <div class="field">
+        <p>
+          <%= label_tag 'task_term', "Echéance :", :class => 'top' %>
+          <%= text_field_tag 'task[term]', nil ,{:id =>"task_term"}%>
+        </p>
+      </div>
+      <div class="field">
+        <p>
+          <%= label_tag 'task_priorities', "Priorité :", :class => 'top' %>
+          <select name="task[priority]" id="task_priorities">
+            <% Task::PRIORITIES.each_with_index do |value, index| %>
+              <option value="<%= index %>"<%= if index == 1 then ' selected=selected' end %>><%= value %></option>
+            <% end %>
+          </select>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <%= label_tag :user_id, "Collaborateur :", :class => 'top' %>
+        <%= f.collection_select :user_id, User.all_reals, :id, :full_name, { :selected => current_user.id }, :class => 'assigned_to' %>
+      </div>
+      <div class="field align-mid">
+        <label class="checkbox">
+          <%= check_box_tag :mail, "yes" %>
+          Envoyer un mail à ce collaborateur
+        </label>
+      </div>
+    </div>
+    <div class="row row-fluid">
+      <div class="field full">
+        <%= label_tag 'task_notes', "Description :", :class => 'top' %>
+        <%= text_area_tag  'task[notes]',nil, { :rows => "5", :style => 'width: 80%;' } %>
+      </div>
+    </div>
+  </div>
+  <%= f.hidden_field :account_id %>
+  <div class="row row-fluid action">
+    <%= f.button 'Créer un Évènement', :type => :submit, :class =>"btn btn-primary" %>
+  </div>
+<% end %>
+

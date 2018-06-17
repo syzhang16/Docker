@@ -1,0 +1,24 @@
+<%= render 'title', :locals => { :title => @title }%>
+<div class="container-fluid">
+  <table class="table table-bordered table-striped">
+   <thead>
+    <tr>
+        <th class="text-center">Societe</th>
+        <th class="text-center">Éditer</th>
+    </tr>
+   </thead>
+  <tbody>
+  <% @templates.each do |template| %>
+    <tr>
+      <td class="text-center"><%= template.company %></td>
+      <td class="text-center"><%= link_to '<i class="fa fa-edit fa-2x action-icon"></i>'.html_safe, edit_quotation_template_path(template),{:title => "Éditer le modèle"} %></td>
+    </tr>
+  <% end %>
+  </tbody>
+  </table>
+
+  <br />
+
+  <%= paginate @templates %>
+
+</div>
