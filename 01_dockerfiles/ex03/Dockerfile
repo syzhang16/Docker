@@ -10,7 +10,7 @@ RUN sudo apt-get install -y git-core
 # Ruby interpreter is required to run GitLab
 RUN sudo apt-get remove ruby1.8 && mkdir /tmp/ruby && cd /tmp/ruby && curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.4.tar.gz && echo 'ec82b0d53bd0adad9b19e6b45e44d54e9ec3f10c  ruby-2.4.4.tar.gz' | shasum -c - && tar xzf ruby-2.4.4.tar.gz && cd ruby-2.4.4
 RUN ./configure --disable-install-rdoc && make && sudo make install
-# install the Bundler gem 
+# install the Bundler gem
 RUN sudo gem install bundler --no-ri --no-rdoc
 # Remove former Go installation folder
 RUN sudo rm -rf /usr/local/go && curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz && echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - &&   sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz && sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/ && rm go1.8.3.linux-amd64.tar.gz
@@ -26,7 +26,7 @@ RUN sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trg
 # Create the GitLab production database and grant all privileges on database
 RUN sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
 # connecting to the new database with the new user
-RUN sudo -u git -H psql -d gitlabhq_production
+RUN sudo -u git -H psql -d gitlabhq_production && gitlabhq_production> \q
 # install Redis 2.8
 RUN sudo apt-get install redis-server
 # We'll install GitLab into home directory of the user "git"
@@ -73,7 +73,7 @@ RUN sudo -u git -H git config --global receive.advertisePushOptions true
 RUN sudo -u git -H cp config/resque.yml.example config/resque.yml
 # Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
 RUN sudo -u git -H editor config/resque.yml
-# Configure GitLab DB Settings 
+# Configure GitLab DB Settings
 RUN sudo -u git cp config/database.yml.postgresql config/database.yml
 # Install gems
 RUN sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
@@ -81,27 +81,30 @@ RUN sudo -u git -H bundle install --deployment --without development test mysql 
 RUN sudo -u git -H bundle exec rake gitlab:shell:install REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production SKIP_STORAGE_VALIDATION=true
 # Install gitlab-workhorse
 RUN sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
-# Initialize Database and Activate Advanced Features 
+# Initialize Database and Activate Advanced Features
 RUN sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 # Type 'yes' to create the database tables.
 # When done you see 'Administrator account created:'
-RUN sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=helloworld GITLAB_ROOT_EMAIL=syzhang@student.42.fr
-# Install Init Script 
+# Install Init Script
 RUN sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
-# Install Gitaly 
+# Install Gitaly
 # Fetch Gitaly source with Git and compile with Go
 RUN sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
-# Setup Logrotate 
+# Restrict Gitaly socket access
+RUN sudo chmod 0700 /home/git/gitlab/tmp/sockets/private && sudo chown git /home/git/gitlab/tmp/sockets/private
+# Setup Logrotate
 RUN sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 # Check if GitLab and its environment are configured correctly
 RUN sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
-# Compile GetText PO files 
+# Compile GetText PO files
 RUN sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
-# Compile Assets 
+# Compile Assets
 RUN sudo -u git -H yarn install --production --pure-lockfile && sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
-# Start GitLab Instance 
+# Start GitLab Instance
 RUN sudo service gitlab start
+# install nginx
 RUN sudo apt-get install -y nginx
+# Site Configuration
 RUN sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab && sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 # Validate your gitlab or gitlab-ssl Nginx config file
 RUN sudo nginx -t
@@ -135,3 +138,4 @@ RUN sudo service nginx restart
 #     user git            # Your remote git user
 #     port 2222           # Your port number
 #     hostname 127.0.0.1; # Your server name or IP
+ENTRYPOINT service postgresql start && sleep 3 && service redis-server start && service gitlab stop && service gitlab start && service nginx start && service ssh start && /bin/bash
