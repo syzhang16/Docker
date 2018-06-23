@@ -108,4 +108,4 @@ RUN sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab && sudo l
 # Validate your gitlab or gitlab-ssl Nginx config file
 RUN sudo nginx -t
 RUN sudo service nginx restart
-ENTRYPOINT service postgresql start && sleep 3 && service redis-server start && service gitlab stop && service gitlab start && service nginx start && service ssh start && /bin/bash
+ENTRYPOINT service postgresql start && service redis-server start && service gitlab start && service nginx start && service ssh start
