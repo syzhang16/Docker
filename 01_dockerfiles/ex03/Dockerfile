@@ -108,4 +108,5 @@ RUN sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab && sudo l
 # Validate your gitlab or gitlab-ssl Nginx config file
 RUN sudo nginx -t
 RUN sudo service nginx restart
+RUN sudo sed -i "s/#Port 22/Port 22/" /etc/ssh/sshd_config
 ENTRYPOINT service postgresql start && service redis-server start && service gitlab start && service nginx start && service ssh start
