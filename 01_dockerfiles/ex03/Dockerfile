@@ -1,33 +1,50 @@
-FROM debian:latest
+FROM debian
 # run as root!
 RUN apt-get update -y && apt-get upgrade -y && apt-get install sudo -y
-# Install the required packages (needed to compile Ruby and native extensions to Ruby gems)
+# # Install the required packages (needed to compile Ruby and native extensions to Ruby gems)
 RUN sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake
 # Install Git
 RUN sudo apt-get install -y git-core
-# Ruby interpreter is required to run GitLab
-RUN sudo apt-get remove ruby1.8 && mkdir /tmp/ruby && cd /tmp/ruby && curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.4.tar.gz && echo 'ec82b0d53bd0adad9b19e6b45e44d54e9ec3f10c  ruby-2.4.4.tar.gz' | shasum -c - && tar xzf ruby-2.4.4.tar.gz && cd ruby-2.4.4
+# # Ruby interpreter is required to run GitLab
+RUN mkdir /tmp/ruby && cd /tmp/ruby && curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.4.tar.gz && tar xzf ruby-2.4.4.tar.gz && cd ruby-2.4.4
 RUN ./configure --disable-install-rdoc && make && sudo make install
 # install the Bundler gem
 RUN sudo gem install bundler --no-ri --no-rdoc
 # Remove former Go installation folder
-RUN sudo rm -rf /usr/local/go && curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz && echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - &&   sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz && sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/ && rm go1.8.3.linux-amd64.tar.gz
+RUN sudo rm -rf /usr/local/go ln -s /usr/local/go/bin/go /usr/local/bin/go && curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz && echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - && sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz && sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/ && rm go1.8.3.linux-amd64.tar.gz
 # install node v8.x
 RUN curl --location https://deb.nodesource.com/setup_8.x | sudo bash - && sudo apt-get install -y nodejs && curl --silent --show-error https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && sudo apt-get update && sudo apt-get install yarn
 # Create a git user for GitLab
 RUN sudo adduser --disabled-login --gecos 'GitLab' git
-# Install the database packages
+# # Install the database packages
 RUN sudo apt-get install -y postgresql postgresql-client libpq-dev postgresql-contrib
+RUN sudo chown -R postgres:postgres /var/run/postgresql && /etc/init.d/postgresql restart
 # Create a database user for GitLab
 RUN sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
 # Create the pg_trgm extension (required for GitLab 8.6+)
 RUN sudo -u postgres psql -d template1 -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 # Create the GitLab production database and grant all privileges on database
 RUN sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
-# connecting to the new database with the new user
-RUN sudo -u git -H psql -d gitlabhq_production && gitlabhq_production> \q
+RUN sudo -u postgres psql -d template1 -c "ALTER USER git WITH PASSWORD 'secure password';"
 # install Redis 2.8
-RUN sudo apt-get install redis-server
+RUN sudo apt-get install redis-server -y
+# Configure redis to use sockets
+RUN sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
+# Disable Redis listening on TCP by setting 'port' to 0
+RUN sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+# Enable Redis socket for default Debian / Ubuntu path
+RUN echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
+# Grant permission to the socket to all members of the redis group
+RUN echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
+# Create the directory which contains the socket
+RUN mkdir /var/run/redis
+RUN chown redis:redis /var/run/redis
+RUN chmod 755 /var/run/redis
+# Activate the changes to redis.conf
+RUN sudo service redis-server restart
+# Add git to the redis group
+RUN sudo usermod -aG redis git
+RUN sudo service redis-server start && sudo service postgresql start
 # We'll install GitLab into home directory of the user "git"
 RUN cd /home/git
 # Clone GitLab repository
@@ -36,8 +53,6 @@ RUN sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-0
 RUN cd /home/git/gitlab
 # Copy the example GitLab config
 RUN sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
-# Update GitLab config file, follow the directions at top of file
-RUN sudo -u git -H editor config/gitlab.yml
 # Copy the example secrets file
 RUN sudo -u git -H cp config/secrets.yml.example config/secrets.yml && sudo -u git -H chmod 0600 config/secrets.yml
 # Make sure GitLab can write to the log/ and tmp/ directories
@@ -100,13 +115,15 @@ RUN sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 # Compile Assets
 RUN sudo -u git -H yarn install --production --pure-lockfile && sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
 # Start GitLab Instance
-RUN sudo service gitlab start
+RUN sudo /etc/init.d/gitlab restart
 # install nginx
-RUN sudo apt-get install -y nginx
+# RUN sudo apt-get install -y nginx
 # Site Configuration
-RUN sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab && sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+# RUN sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab && sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 # Validate your gitlab or gitlab-ssl Nginx config file
-RUN sudo nginx -t
-RUN sudo service nginx restart
+# RUN sudo nginx -t
+# RUN sudo service nginx restart
+# ENTRYPOINT service postgresql start && service redis-server start && service gitlab start && service nginx start
+RUN sudo curl http://nginx.org/keys/nginx_signing.key | sudo apt-key add && echo "deb http://nginx.org/packages/debian/ stretch nginx" >> /etc/apt/sources.list && echo "deb-src http://nginx.org/packages/debian/ stretch nginx" >> /etc/apt/sources.list && sudo apt-get update && sudo apt-get install nginx && rm -rf /etc/nginx/conf.d/default.conf && sudo cp /home/git/gitlab/lib/support/nginx/gitlab /etc/nginx/conf.d/gitlab.conf
 RUN sudo sed -i "s/#Port 22/Port 22/" /etc/ssh/sshd_config
-ENTRYPOINT service postgresql start && service redis-server start && service gitlab start && service nginx start && service ssh start
+ENTRYPOINT service postgresql start && sleep 3 && service redis-server start && service gitlab stop && service gitlab start && service nginx start && service ssh start && /bin/bash
