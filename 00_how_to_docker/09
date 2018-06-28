@@ -1,5 +1,5 @@
-#!/bin/bash
-docker run -it --rm --name test-gcc debian
+# docker run -it --rm --name test-gcc debian
+# apt update && apt full-upgrade  && apt install -y build-essential git-core
 apt-get update
 apt-get upgrade -y
 apt-get install -y gcc git
